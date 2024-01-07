@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="developers.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="../header/head.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header__line"></div>
+        <a id="name" href=""><img class="name" src="../materials/images/overall design/AkumaTales_text2.png"></a>
+    </div>  
+    <nav class="header__navigation">
+        <ul>
+            <nav class="header__navigation" style="margin-top: -86px;"></nav>
+            <div><a id="developers" href="../developers/developers.html"> DEVELOPERS</div>
+            <div><a id="game" href="../game/monsters.html"> GAME</div>
+            <div><a id="location" href="../atmosphere/location.html"> LOCATION</div>
+        </ul>
+    </nav>
+</header>
+
+  <div class="container mt-4">
+    <h1 class="text-center mb-4">Developers</h1>
+    <p>The page contains a comprehensive dataset outlining key information about various game developers, which could prove invaluable while aiming to initiate gaming company.
+        It includes a variety of essential details crucial for understanding the landscape of the gaming industry and potential competitors or collaborators.</p>
+    <ul id="companies-list" class="list-group"></ul>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const apiUrl = 'https://my.api.mockaroo.com/developers.json?key=8a6e7130';
+
+      fetch(apiUrl)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const companiesList = document.getElementById('companies-list');
+
+          data.forEach((company) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.innerHTML = `
+              <div class="row">
+                <div class="col">
+                  <h5>${company.Company_Name}</h5>
+                  <p>Market Share: ${company.Market_Share_Percentage}</p>
+                  <p>Development Team Size: ${company.Development_Team_Size}</p>
+                  <p>Top Marketing Channel: ${company.Top_Marketing_Channel}</p>
+                </div>
+                <div class="col">
+                  <p>Target Platforms: ${company.Target_Platforms}</p>
+                  <p>Average Game Rating: ${company.Average_Game_Rating}</p>
+                  <p>Revenue Allocation: ${company.Revenue_Allocation}</p>
+                  <p>Game Development Duration: ${company.Game_Development_Duration}</p>
+                </div>
+              </div>
+            `;
+
+            companiesList.appendChild(listItem);
+          });
+        })
+        .catch((error) => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    });
+  </script>
+  <div class="chart-container">
+    <div class="charts">
+        <h1>Charts</h1>
+        <p>Enclosed are graphical representations<br> elucidating the data pertaining<br> to ten exemplary companies.</p>
+    </div>
+    <canvas id="marketSharePieChart"></canvas>
+    <canvas id="teamSizeLineChart"></canvas>
+</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const apiUrl = 'https://my.api.mockaroo.com/developers.json?key=8a6e7130'; 
+
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+         
+          const limitedData = data.slice(0, 10);
+
+          const companyNames = limitedData.map(company => company.Company_Name);
+          const marketShareData = limitedData.map(company => parseFloat(company.Market_Share_Percentage)); 
+          const teamSizes = limitedData.map(company => company.Development_Team_Size);
+
+          
+          const marketSharePieChartCanvas = document.getElementById('marketSharePieChart');
+          new Chart(marketSharePieChartCanvas, {
+            type: 'pie',
+            data: {
+              labels: companyNames,
+              datasets: [{
+                label: 'Market Share Percentage',
+                data: marketShareData,
+                backgroundColor: [
+                  '#5C8923', '#238978', '#314A96', '#943CAE', '#982F59',
+                  '#80301C', '#D35400', '#34495E ', '#D4AC0D ', '#707B7C '
+                ],
+              }],
+            },
+          });
+
+          const teamSizeLineChartCanvas = document.getElementById('teamSizeLineChart');
+          new Chart(teamSizeLineChartCanvas, {
+            type: 'line',
+            data: {
+              labels: companyNames,
+              datasets: [{
+                label: 'Team Size over Game Development Duration',
+                data: teamSizes,
+                borderColor: '#520303',
+                fill: false,
+              }],
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: 'Team Size'
+                  }
+                },
+                x: {
+                  title: {
+                    display: true,
+                  }
+                }
+              }
+            }
+          });
+        })
+        .catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    });
+  </script>
+
+
+
+</body>
+</html> 
